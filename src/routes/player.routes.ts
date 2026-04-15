@@ -5,27 +5,22 @@ import {
   createPlayer,
   updatePlayer,
   deletePlayer,
-  getTopScorers
 } from "../controllers/player.controller";
-import { auth, isAdmin } from "../middleware/auth";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
-
+// READ (public)
 router.get("/", getPlayers);
-
-
-router.get("/top-scorers", getTopScorers);
-
-
 router.get("/:id", getPlayerById);
 
+// CREATE (admin only)
+router.post("/", requireAuth, requireAdmin, createPlayer);
 
-router.post("/", auth, isAdmin, createPlayer);
+// UPDATE (admin only)
+router.put("/:id", requireAuth, requireAdmin, updatePlayer);
 
-
-router.put("/:id", auth, isAdmin, updatePlayer);
-
-router.delete("/:id", auth, isAdmin, deletePlayer);
+// DELETE (admin only)
+router.delete("/:id", requireAuth, requireAdmin, deletePlayer);
 
 export default router;

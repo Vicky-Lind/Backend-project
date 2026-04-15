@@ -1,11 +1,9 @@
-import express from "express";
-import cors from "cors";
+import * as express from "express";
+import * as cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import playerRoutes from "./routes/player.routes";
 import matchRoutes from "./routes/matches.routes";
 import teamRoutes from "./routes/teams.routes";
-
-
 
 const app = express();
 

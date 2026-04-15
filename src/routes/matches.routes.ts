@@ -6,7 +6,7 @@ import {
   updateMatch,
   deleteMatch,
 } from "../controllers/matches.controller";
-import { auth, isAdmin } from "../middleware/auth";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
@@ -15,12 +15,12 @@ router.get("/", getMatches);
 router.get("/:id", getMatchById);
 
 // CREATE
-router.post("/", auth, isAdmin, createMatch);
+router.post("/", requireAuth, requireAdmin, createMatch);
 
 // UPDATE
-router.put("/:id", auth, isAdmin, updateMatch);
+router.put("/:id", requireAuth, requireAdmin, updateMatch);
 
 // DELETE
-router.delete("/:id", auth, isAdmin, deleteMatch);
+router.delete("/:id", requireAuth, requireAdmin, deleteMatch);
 
 export default router;

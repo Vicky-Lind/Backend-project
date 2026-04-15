@@ -1,40 +1,61 @@
-import type { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
+import * as jwt from "jsonwebtoken";
 
-export const auth: RequestHandler = (req, res, next) => {
+type UserRole = "USER" | "ADMIN";
+
+interface TokenPayload {
+  id: number;
+  role: UserRole;
+}
+
+export interface AuthRequest extends Request {
+  authUser?: TokenPayload;
+}
+
+export const requireAuth: RequestHandler = (req, res, next) => {
   const header = req.headers.authorization;
 
-  if (!header) return res.sendStatus(401);
+  if (!header) {
+    res.status(401).json({ message: "No token provided" });
+    return;
+  }
 
   const parts = header.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return res.sendStatus(401);
+    res.status(401).json({ message: "Invalid token format" });
+    return;
   }
 
   const token = parts[1];
 
-  if (!token) return res.sendStatus(401); 
+  if (!token) {
+    res.status(401).json({ message: "Token missing" });
+    return;
+  }
 
   try {
-    const decoded = jwt.verify(token, "SECRET");
-    req.user = decoded;
+    const decoded = jwt.verify(token, "SECRET") as unknown as TokenPayload;
+
+    (req as AuthRequest).authUser = decoded;
+
     next();
   } catch {
-    res.sendStatus(403);
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 
+export const requireAdmin: RequestHandler = (req, res, next) => {
+  const authReq = req as AuthRequest;
 
-export const isAdmin: RequestHandler = (req, res, next) => {
-  // make sure user exists
-  if (!req.user || typeof req.user === "string") {
-    return res.sendStatus(403);
+  if (!authReq.authUser) {
+    res.status(401).json({ message: "Not authenticated" });
+    return;
   }
 
-  // check role
-  if (req.user.role !== "ADMIN") {
-    return res.sendStatus(403);
+  if (authReq.authUser.role !== "ADMIN") {
+    res.status(403).json({ message: "Admin only" });
+    return;
   }
 
   next();
