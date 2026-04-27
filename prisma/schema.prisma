@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -31,9 +26,21 @@ model Team {
 }
 
 model Match {
-  id         Int @id @default(autoincrement())
-  homeScore  Int
-  awayScore  Int
+  id        Int @id @default(autoincrement())
+  homeScore Int
+  awayScore Int
+}
+
+model MatchPlayerStat {
+  id            Int @id @default(autoincrement())
+  matchId       Int
+  playerId      Int
+  teamId        Int
+  goals         Int @default(0)
+  assists       Int @default(0)
+  yellowCards   Int @default(0)
+  redCards      Int @default(0)
+  minutesPlayed Int @default(0)
 }
 
 enum Role {

@@ -33,24 +33,38 @@ export const register: RequestHandler = async (req, res) => {
 };
 
 export const login: RequestHandler = async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  if (!username || !password) {
-    res.status(400).json({ message: "Missing fields" });
-    return;
+    const user = await prisma.user.findUnique({
+      where: { username: String(username) },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid" });
+    }
+
+    const valid = await bcrypt.compare(String(password), user.password);
+
+    if (!valid) {
+      return res.status(401).json({ message: "Invalid" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      "SECRET"
+    );
+
+    res.json({ token });
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+
+    res.status(500).json({
+      message: "Error logging in",
+      error,
+    });
   }
-
-  const user = await prisma.user.findUnique({
-    where: { username },
-  });
-
-  if (!user) {
-    res.status(401).json({ message: "Invalid username or password" });
-    return;
-  }
-
-  const valid = await bcrypt.compare(password, user.password);
-
+};
   if (!valid) {
     res.status(401).json({ message: "Invalid username or password" });
     return;
