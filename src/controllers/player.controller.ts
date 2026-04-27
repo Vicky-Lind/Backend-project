@@ -1,5 +1,6 @@
 import { prisma } from "../prisma";
 import type { RequestHandler } from "express";
+import type { MatchPlayerStat } from "@prisma/client";
 
 // GET /players
 export const getPlayers: RequestHandler = async (req, res) => {
@@ -80,7 +81,15 @@ export const getTopScorers: RequestHandler = async (req, res) => {
   res.json(players);
 };
 
-// ✅ NEW: GET /players/:id/stats
+// ⭐ GET /players/:id/stats
+type PlayerTotals = {
+  totalGoals: number;
+  totalAssists: number;
+  totalYellowCards: number;
+  totalRedCards: number;
+  totalMinutes: number;
+};
+
 export const getPlayerStats: RequestHandler = async (req, res) => {
   try {
     const playerId = Number(req.params.id);
@@ -100,8 +109,8 @@ export const getPlayerStats: RequestHandler = async (req, res) => {
       });
     }
 
-    const totals = stats.reduce(
-      (acc, stat) => {
+    const totals = stats.reduce<PlayerTotals>(
+      (acc: PlayerTotals, stat: MatchPlayerStat) => {
         acc.totalGoals += stat.goals;
         acc.totalAssists += stat.assists;
         acc.totalYellowCards += stat.yellowCards;
