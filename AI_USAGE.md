@@ -17,7 +17,7 @@ AI helped generate:
 AI provided:
 -Guidance on structuring controllers, services, and routes.
 -Suggestions for improving readability and modularity.
--Help with understanding authentication and authorization logic.
+-Help with understanding requireAuthentication and requireAuthorization logic.
 
 4. Git & Workflow Support
 AI assisted with:

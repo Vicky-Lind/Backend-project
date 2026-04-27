@@ -8,12 +8,12 @@ interface TokenPayload {
   role: UserRole;
 }
 
-export interface AuthRequest extends Request {
-  authUser?: TokenPayload;
+export interface requireAuthRequest extends Request {
+  requireAuthUser?: TokenPayload;
 }
 
 export const requireAuth: RequestHandler = (req, res, next) => {
-  const header = req.headers.authorization;
+  const header = req.headers.requireAuthorization;
 
   if (!header) {
     res.status(401).json({ message: "No token provided" });
@@ -37,7 +37,7 @@ export const requireAuth: RequestHandler = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, "SECRET") as unknown as TokenPayload;
 
-    (req as AuthRequest).authUser = decoded;
+    (req as requireAuthRequest).requireAuthUser = decoded;
 
     next();
   } catch {
@@ -46,14 +46,14 @@ export const requireAuth: RequestHandler = (req, res, next) => {
 };
 
 export const requireAdmin: RequestHandler = (req, res, next) => {
-  const authReq = req as AuthRequest;
+  const requireAuthReq = req as requireAuthRequest;
 
-  if (!authReq.authUser) {
-    res.status(401).json({ message: "Not authenticated" });
+  if (!requireAuthReq.requireAuthUser) {
+    res.status(401).json({ message: "Not requireAuthenticated" });
     return;
   }
 
-  if (authReq.authUser.role !== "ADMIN") {
+  if (requireAuthReq.requireAuthUser.role !== "ADMIN") {
     res.status(403).json({ message: "Admin only" });
     return;
   }

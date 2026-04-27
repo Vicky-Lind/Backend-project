@@ -41,21 +41,31 @@ export const login: RequestHandler = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid" });
+      res.status(401).json({ message: "Invalid username or password" });
+      return;
     }
 
     const valid = await bcrypt.compare(String(password), user.password);
 
     if (!valid) {
-      return res.status(401).json({ message: "Invalid" });
+      res.status(401).json({ message: "Invalid username or password" });
+      return;
     }
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      "SECRET"
+      "SECRET",
+      { expiresIn: "1h" }
     );
 
-    res.json({ token });
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
+    });
   } catch (error) {
     console.log("LOGIN ERROR:", error);
 
@@ -64,22 +74,4 @@ export const login: RequestHandler = async (req, res) => {
       error,
     });
   }
-};
-  if (!valid) {
-    res.status(401).json({ message: "Invalid username or password" });
-    return;
-  }
-
-  const token = jwt.sign({ id: user.id, role: user.role }, "SECRET", {
-    expiresIn: "1h",
-  });
-
-  res.json({
-    token,
-    user: {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-    },
-  });
 };

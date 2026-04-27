@@ -11,21 +11,14 @@ import {
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+console.log("requireAuth:", typeof requireAuth);
+console.log("requireAdmin:", typeof requireAdmin);
+console.log("createPlayer:", typeof createPlayer);
 
-router.get("/", getPlayers);
-
-router.get("/top-scorers", getTopScorers);
-
-// PLAYER STATS
-router.get("/:id/stats", getPlayerStats);
-
-router.get("/:id", getPlayerById);
-
-router.post("/", auth, isAdmin, createPlayer);
-
-router.put("/:id", auth, isAdmin, updatePlayer);
 // READ (public)
 router.get("/", getPlayers);
+router.get("/top-scorers", getTopScorers);
+router.get("/:id/stats", getPlayerStats);
 router.get("/:id", getPlayerById);
 
 // CREATE (admin only)

@@ -10,7 +10,6 @@ import {
   createMatchStat,
   getMatchStats,
 } from "../controllers/matchStats.controller";
-import { auth, isAdmin } from "../middleware/auth";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
@@ -29,7 +28,7 @@ router.put("/:id", requireAuth, requireAdmin, updateMatch);
 router.delete("/:id", requireAuth, requireAdmin, deleteMatch);
 
 // MATCH STATS
-router.post("/:id/stats", auth, isAdmin, createMatchStat);
+router.post("/:id/stats", requireAuth, requireAdmin, createMatchStat);
 router.get("/:id/stats", getMatchStats);
 
 export default router;
