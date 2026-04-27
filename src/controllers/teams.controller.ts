@@ -63,3 +63,50 @@ export const deleteTeam: RequestHandler = async (req, res) => {
     res.status(404).json({ message: "Team not found" });
   }
 };
+
+// ✅ NEW: GET /teams/:id/stats
+export const getTeamStats: RequestHandler = async (req, res) => {
+  try {
+    const teamId = Number(req.params.id);
+
+    const stats = await prisma.matchPlayerStat.findMany({
+      where: { teamId }
+    });
+
+    if (stats.length === 0) {
+      return res.json({
+        teamId,
+        totalGoals: 0,
+        totalAssists: 0,
+        totalYellowCards: 0,
+        totalRedCards: 0,
+        totalMinutes: 0
+      });
+    }
+
+    const totals = stats.reduce(
+      (acc, stat) => {
+        acc.totalGoals += stat.goals;
+        acc.totalAssists += stat.assists;
+        acc.totalYellowCards += stat.yellowCards;
+        acc.totalRedCards += stat.redCards;
+        acc.totalMinutes += stat.minutesPlayed;
+        return acc;
+      },
+      {
+        totalGoals: 0,
+        totalAssists: 0,
+        totalYellowCards: 0,
+        totalRedCards: 0,
+        totalMinutes: 0
+      }
+    );
+
+    res.json({
+      teamId,
+      ...totals
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching team stats", error });
+  }
+};
