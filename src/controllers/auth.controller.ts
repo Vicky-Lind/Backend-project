@@ -1,36 +1,34 @@
 import { prisma } from "../prisma";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import type { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 
 export const register: RequestHandler = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({
-        message: "Username and password are required",
-      });
+      res.status(400).json({ message: "Missing fields" });
+      return;
     }
 
-    const hashed = await bcrypt.hash(String(password), 10);
+    const hashed = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
-        username: String(username),
+        username,
         password: hashed,
-        role: role || "USER",
+      },
+      select: {
+        id: true,
+        username: true,
+        role: true,
       },
     });
 
     res.status(201).json(user);
   } catch (error) {
-    console.log("REGISTER ERROR:", error);
-
-    res.status(500).json({
-      message: "Error registering user",
-      error,
-    });
+    res.status(400).json({ message: "User already exists" });
   }
 };
 
@@ -66,4 +64,22 @@ export const login: RequestHandler = async (req, res) => {
       error,
     });
   }
+};
+  if (!valid) {
+    res.status(401).json({ message: "Invalid username or password" });
+    return;
+  }
+
+  const token = jwt.sign({ id: user.id, role: user.role }, "SECRET", {
+    expiresIn: "1h",
+  });
+
+  res.json({
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    },
+  });
 };
