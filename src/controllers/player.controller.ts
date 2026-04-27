@@ -37,7 +37,7 @@ export const createPlayer: RequestHandler = async (req, res) => {
   res.status(201).json(player);
 };
 
-
+// PUT /players/:id
 export const updatePlayer: RequestHandler = async (req, res) => {
   const id = Number(req.params.id);
 
@@ -68,7 +68,7 @@ export const deletePlayer: RequestHandler = async (req, res) => {
   }
 };
 
-// ⭐ EXTRA FEATURE: GET /players/top-scorers
+// ⭐ GET /players/top-scorers
 export const getTopScorers: RequestHandler = async (req, res) => {
   const players = await prisma.player.findMany({
     orderBy: {
@@ -78,4 +78,51 @@ export const getTopScorers: RequestHandler = async (req, res) => {
   });
 
   res.json(players);
+};
+
+// ✅ NEW: GET /players/:id/stats
+export const getPlayerStats: RequestHandler = async (req, res) => {
+  try {
+    const playerId = Number(req.params.id);
+
+    const stats = await prisma.matchPlayerStat.findMany({
+      where: { playerId }
+    });
+
+    if (stats.length === 0) {
+      return res.json({
+        playerId,
+        totalGoals: 0,
+        totalAssists: 0,
+        totalYellowCards: 0,
+        totalRedCards: 0,
+        totalMinutes: 0
+      });
+    }
+
+    const totals = stats.reduce(
+      (acc, stat) => {
+        acc.totalGoals += stat.goals;
+        acc.totalAssists += stat.assists;
+        acc.totalYellowCards += stat.yellowCards;
+        acc.totalRedCards += stat.redCards;
+        acc.totalMinutes += stat.minutesPlayed;
+        return acc;
+      },
+      {
+        totalGoals: 0,
+        totalAssists: 0,
+        totalYellowCards: 0,
+        totalRedCards: 0,
+        totalMinutes: 0
+      }
+    );
+
+    res.json({
+      playerId,
+      ...totals
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching player stats", error });
+  }
 };
