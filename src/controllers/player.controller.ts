@@ -81,7 +81,7 @@ export const getTopScorers: RequestHandler = async (req, res) => {
   res.json(players);
 };
 
-// ⭐ GET /players/:id/stats
+// GET /players/:id/stats
 type PlayerTotals = {
   totalGoals: number;
   totalAssists: number;
