@@ -6,6 +6,10 @@ import {
   updateMatch,
   deleteMatch,
 } from "../controllers/matches.controller";
+import {
+  createMatchStat,
+  getMatchStats,
+} from "../controllers/matchStats.controller";
 import { auth, isAdmin } from "../middleware/auth";
 
 const router = Router();
@@ -22,5 +26,9 @@ router.put("/:id", auth, isAdmin, updateMatch);
 
 // DELETE
 router.delete("/:id", auth, isAdmin, deleteMatch);
+
+// MATCH STATS
+router.post("/:id/stats", auth, isAdmin, createMatchStat);
+router.get("/:id/stats", getMatchStats);
 
 export default router;
