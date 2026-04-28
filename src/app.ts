@@ -20,7 +20,6 @@ app.get("/", (req, res) => {
   res.json({
     message: "⚽ API is running ⚽",
     endpoints: {
-      auth: ["/auth/register", "/auth/login"],
       players: ["/players", "/players/:id"],
       matches: ["/matches", "/matches/:id"],
       teams: ["/teams", "/teams/:id"],
