@@ -1,6 +1,4 @@
 import { Router } from "express";
-<<<<<<< HEAD
-=======
 import {
   getTeams,
   getTeamById,
@@ -9,8 +7,6 @@ import {
   deleteTeam,
   getTeamStats,
 } from "../controllers/teams.controller";
->>>>>>> 968ac5afc5659f22646000df9bcacd8279b89b2a
-import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
