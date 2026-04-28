@@ -19,16 +19,16 @@ router.get("/", getMatches);
 router.get("/:id", getMatchById);
 
 // CREATE
-router.post("/", requireAuth, requireAdmin, createMatch);
+router.post("/", createMatch);
 
 // UPDATE
-router.put("/:id", requireAuth, requireAdmin, updateMatch);
+router.put("/:id", updateMatch);
 
 // DELETE
-router.delete("/:id", requireAuth, requireAdmin, deleteMatch);
+router.delete("/:id", deleteMatch);
 
 // MATCH STATS
-router.post("/:id/stats", requireAuth, requireAdmin, createMatchStat);
+router.post("/:id/stats", createMatchStat);
 router.get("/:id/stats", getMatchStats);
 
 export default router;
