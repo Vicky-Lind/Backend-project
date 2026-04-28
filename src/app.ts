@@ -16,6 +16,19 @@ app.use(express.json());
 // Attach logger middleware
 app.use(requestLogger);
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "⚽ API is running ⚽",
+    endpoints: {
+      auth: ["/auth/register", "/auth/login"],
+      players: ["/players", "/players/:id"],
+      matches: ["/matches", "/matches/:id"],
+      teams: ["/teams", "/teams/:id"],
+      health: "/health",
+    },
+  });
+});
+
 // Health check route
 app.get("/health", (req, res) => {
   res.json(healthCheck());
