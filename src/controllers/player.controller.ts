@@ -13,7 +13,7 @@ export const getPlayerById: RequestHandler = async (req, res) => {
   const id = Number(req.params.id);
 
   const player = await prisma.player.findUnique({
-    where: { id }
+    where: { id },
   });
 
   if (!player) {
@@ -31,8 +31,8 @@ export const createPlayer: RequestHandler = async (req, res) => {
     data: {
       name,
       goals: goals ?? 0,
-      assists: assists ?? 0
-    }
+      assists: assists ?? 0,
+    },
   });
 
   res.status(201).json(player);
@@ -45,7 +45,7 @@ export const updatePlayer: RequestHandler = async (req, res) => {
   try {
     const updatedPlayer = await prisma.player.update({
       where: { id },
-      data: req.body
+      data: req.body,
     });
 
     res.json(updatedPlayer);
@@ -60,7 +60,7 @@ export const deletePlayer: RequestHandler = async (req, res) => {
 
   try {
     await prisma.player.delete({
-      where: { id }
+      where: { id },
     });
 
     res.json({ message: "Player deleted" });
@@ -73,9 +73,9 @@ export const deletePlayer: RequestHandler = async (req, res) => {
 export const getTopScorers: RequestHandler = async (req, res) => {
   const players = await prisma.player.findMany({
     orderBy: {
-      goals: "desc"
+      goals: "desc",
     },
-    take: 5
+    take: 5,
   });
 
   res.json(players);
@@ -95,7 +95,7 @@ export const getPlayerStats: RequestHandler = async (req, res) => {
     const playerId = Number(req.params.id);
 
     const stats = await prisma.matchPlayerStat.findMany({
-      where: { playerId }
+      where: { playerId },
     });
 
     if (stats.length === 0) {
@@ -105,7 +105,7 @@ export const getPlayerStats: RequestHandler = async (req, res) => {
         totalAssists: 0,
         totalYellowCards: 0,
         totalRedCards: 0,
-        totalMinutes: 0
+        totalMinutes: 0,
       });
     }
 
@@ -123,13 +123,13 @@ export const getPlayerStats: RequestHandler = async (req, res) => {
         totalAssists: 0,
         totalYellowCards: 0,
         totalRedCards: 0,
-        totalMinutes: 0
-      }
+        totalMinutes: 0,
+      },
     );
 
     res.json({
       playerId,
-      ...totals
+      ...totals,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching player stats", error });
