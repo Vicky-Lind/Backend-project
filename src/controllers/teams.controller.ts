@@ -64,7 +64,7 @@ export const deleteTeam: RequestHandler = async (req, res) => {
   }
 };
 
-// ✅ NEW: GET /teams/:id/stats
+// GET /teams/:id/stats
 export const getTeamStats: RequestHandler = async (req, res) => {
   try {
     const teamId = Number(req.params.id);

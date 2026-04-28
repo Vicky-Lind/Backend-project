@@ -34,7 +34,6 @@ export const createMatch: RequestHandler = async (req, res) => {
   const match = await prisma.match.create({
     data: {
       homeScore,
-
       awayScore,
     },
   });

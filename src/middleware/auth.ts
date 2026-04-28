@@ -13,7 +13,7 @@ export interface requireAuthRequest extends Request {
 }
 
 export const requireAuth: RequestHandler = (req, res, next) => {
-  const header = req.headers.requireAuthorization;
+ const header = req.headers.authorization;
 
   if (!header) {
     res.status(401).json({ message: "No token provided" });

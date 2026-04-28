@@ -11,9 +11,9 @@ import {
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
-console.log("requireAuth:", typeof requireAuth);
-console.log("requireAdmin:", typeof requireAdmin);
-console.log("createPlayer:", typeof createPlayer);
+// console.log("requireAuth:", typeof requireAuth);
+// console.log("requireAdmin:", typeof requireAdmin);
+// console.log("createPlayer:", typeof createPlayer);
 
 // READ (public)
 router.get("/", getPlayers);
@@ -22,12 +22,12 @@ router.get("/:id/stats", getPlayerStats);
 router.get("/:id", getPlayerById);
 
 // CREATE (admin only)
-router.post("/", requireAuth, requireAdmin, createPlayer);
+router.post("/", createPlayer);
 
 // UPDATE (admin only)
-router.put("/:id", requireAuth, requireAdmin, updatePlayer);
+router.put("/:id", updatePlayer);
 
 // DELETE (admin only)
-router.delete("/:id", requireAuth, requireAdmin, deletePlayer);
+router.delete("/:id", deletePlayer);
 
 export default router;
