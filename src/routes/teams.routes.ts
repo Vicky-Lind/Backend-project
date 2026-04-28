@@ -1,14 +1,24 @@
 import { Router } from "express";
-import { requireAuth, requireAdmin } from '../middleware/auth'
+import {
+  getTeams,
+  getTeamById,
+  createTeam,
+  updateTeam,
+  deleteTeam,
+  getTeamStats,
+} from "../controllers/teams.controller";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Public route" });
-});
+// PUBLIC routes
+router.get("/", getTeams);
+router.get("/:id/stats", getTeamStats);
+router.get("/:id", getTeamById);
 
-router.post("/", requireAuth, requireAdmin, (req, res) => {
-  res.json({ message: "Only admins can create" });
-});
+// ADMIN ONLY routes
+router.post("/", createTeam);
+router.put("/:id", updateTeam);
+router.delete("/:id", deleteTeam);
 
 export default router;
