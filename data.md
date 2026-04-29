@@ -384,3 +384,13 @@ POST /matches/3/stats
   "redCards": 0,
   "minutesPlayed": 90
 }
+
+
+
+
+DELETE /players/:id
+
+PUT /players/:id
+{
+    "goals": 2
+}
