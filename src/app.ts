@@ -15,6 +15,19 @@ app.use(express.json());
 
 app.use(requestLogger);
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "⚽ API is running ⚽",
+    endpoints: {
+      players: ["/players", "/players/:id"],
+      matches: ["/matches", "/matches/:id"],
+      teams: ["/teams", "/teams/:id"],
+      health: "/health",
+    },
+  });
+});
+
+// Health check route
 app.get("/health", (req, res) => {
   res.json(healthCheck());
 });
